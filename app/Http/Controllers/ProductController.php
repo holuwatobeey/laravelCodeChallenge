@@ -22,4 +22,17 @@ class ProductController extends Controller
             ->get(['name', 'price', 'quantity'])
             ->toArray();
     }
+    public function show($id)
+    {
+        $product = $this->user->products()->find($id);
+    
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, product with id ' . $id . ' cannot be found'
+            ], 400);
+        }
+    
+        return $product;
+    }
 }
