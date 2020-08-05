@@ -35,4 +35,36 @@ class ProductController extends Controller
     
         return $product;
     }
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'name' => 'required',
+            'price' => 'required|integer',
+            'quantity' => 'required|integer',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+    
+        $product = new Product();
+        $product->name = $request->name;
+        $product->price = $request->price;
+        $product->quantity = $request->quantity;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $name = time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/images');
+            $image->move($destinationPath, $name);
+
+            $product->image = $image;
+        }
+        if ($this->user->products()->save($product))
+            return response()->json([
+                'success' => true,
+                'product' => $product
+            ]);
+        else
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, product could not be created'
+            ], 500);
+    }
 }
