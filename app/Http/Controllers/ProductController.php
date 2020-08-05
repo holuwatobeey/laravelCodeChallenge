@@ -92,4 +92,26 @@ class ProductController extends Controller
             ], 500);
         }
     }
+    public function destroy($id)
+    {
+        $product = $this->user->products()->find($id);
+    
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, product with id does not exist'
+            ], 400);
+        }
+    
+        if ($product->delete()) {
+            return response()->json([
+                'success' => true
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, Product could not be deleted'
+            ], 500);
+        }
+    }
 }
