@@ -67,4 +67,29 @@ class ProductController extends Controller
                 'message' => 'Sorry, product could not be created'
             ], 500);
     }
+    public function update(Request $request, $id)
+    {
+        $product = $this->user->products()->find($id);
+    
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, product id does not exist.'
+            ], 400);
+        }
+    
+        $updated = $product->fill($request->all())
+            ->save();
+    
+        if ($updated) {
+            return response()->json([
+                'success' => true
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sorry, product could not be updated'
+            ], 500);
+        }
+    }
 }
